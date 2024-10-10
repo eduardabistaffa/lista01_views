@@ -1,0 +1,182 @@
+
+1. Exibir lista de alunos e seus cursos
+
+CREATE VIEW alunos_cursos AS
+SELECT a.nome AS nome_aluno, d.nome AS disciplina, c.nome AS curso
+FROM aluno a
+JOIN matricula m ON a.id_aluno = m.id_aluno
+JOIN disciplina d ON m.id_disciplina = d.id_disciplina
+JOIN curso c ON d.id_curso = c.id_curso;
+
+
+
+
+2. Exibir total de alunos por disciplina
+
+CREATE VIEW total_alunos_disciplina AS
+SELECT d.nome AS disciplina, COUNT(m.id_aluno) AS total_alunos
+FROM disciplina d
+LEFT JOIN matricula m ON d.id_disciplina = m.id_disciplina
+GROUP BY d.nome;
+
+
+
+
+3. Exibir alunos e status das suas matrículas
+CREATE VIEW alunos_status_matricula AS
+SELECT a.nome AS nome_aluno, d.nome AS disciplina, m.status
+FROM aluno a
+JOIN matricula m ON a.id_aluno = m.id_aluno
+JOIN disciplina d ON m.id_disciplina = d.id_disciplina;
+
+
+
+4. Exibir professores e suas turmas
+
+CREATE VIEW professores_turmas AS
+SELECT p.nome AS nome_professor, d.nome AS disciplina, t.horario
+FROM professor p
+JOIN turma t ON p.id_professor = t.id_professor
+JOIN disciplina d ON t.id_disciplina = d.id_disciplina;
+
+
+5. Exibir alunos maiores de 20 anos
+
+CREATE VIEW alunos_maiores_20 AS
+SELECT nome, data_nascimento
+FROM aluno
+WHERE DATEDIFF(CURDATE(), data_nascimento) / 365 > 20;
+
+
+
+6. Exibir disciplinas e carga horária total por curso
+
+CREATE VIEW disciplinas_carga_horaria_por_curso AS
+SELECT c.nome AS curso, COUNT(d.id_disciplina) AS total_disciplinas, SUM(c.carga_horaria) AS carga_horaria_total
+FROM curso c
+LEFT JOIN disciplina d ON c.id_curso = d.id_curso
+GROUP BY c.nome;
+
+
+
+7. Exibir professores e suas especialidades
+
+CREATE VIEW professores_especialidades AS
+SELECT nome, especialidade
+FROM professor;
+
+
+
+8. Exibir alunos matriculados em mais de uma disciplina
+
+CREATE VIEW alunos_matriculados_mais_de_uma AS
+SELECT a.nome AS nome_aluno, COUNT(m.id_disciplina) AS total_disciplinas
+FROM aluno a
+JOIN matricula m ON a.id_aluno = m.id_aluno
+GROUP BY a.nome
+HAVING COUNT(m.id_disciplina) > 1;
+
+
+9. Exibir alunos e o número de disciplinas que concluíram
+
+CREATE VIEW alunos_disciplinas_concluidas AS
+SELECT a.nome AS nome_aluno, COUNT(m.id_disciplina) AS total_concluidas
+FROM aluno a
+JOIN matricula m ON a.id_aluno = m.id_aluno
+WHERE m.status = 'Concluído'
+GROUP BY a.nome;
+
+
+
+10. Exibir todas as turmas de um semestre específico
+
+CREATE VIEW turmas_semestre AS
+SELECT *
+FROM turma
+WHERE semestre = '2024.1';
+
+
+
+11. Exibir alunos com matrículas trancadas
+
+CREATE VIEW alunos_matriculas_trancadas AS
+SELECT a.nome AS nome_aluno
+FROM aluno a
+JOIN matricula m ON a.id_aluno = m.id_aluno
+WHERE m.status = 'Trancado';
+
+
+12. Exibir disciplinas que não têm alunos matriculados
+
+CREATE VIEW disciplinas_sem_alunos AS
+SELECT d.nome AS disciplina
+FROM disciplina d
+LEFT JOIN matricula m ON d.id_disciplina = m.id_disciplina
+WHERE m.id_matricula IS NULL;
+
+
+
+13. Exibir a quantidade de alunos por status de matrícula
+
+CREATE VIEW quantidade_alunos_por_status AS
+SELECT status, COUNT(id_aluno) AS total_alunos
+FROM matricula
+GROUP BY status;
+
+
+14. Exibir o total de professores por especialidade
+
+CREATE VIEW total_professores_por_especialidade AS
+SELECT especialidade, COUNT(id_professor) AS total_professores
+FROM professor
+GROUP BY especialidade;
+
+
+15. Exibir lista de alunos e suas idades
+
+CREATE VIEW alunos_idades AS
+SELECT nome, DATEDIFF(CURDATE(), data_nascimento) / 365 AS idade
+FROM aluno;
+
+
+16. Exibir alunos e suas últimas matrículas
+
+CREATE VIEW alunos_ultimas_matriculas AS
+SELECT a.nome AS nome_aluno, MAX(m.data_matricula) AS ultima_matricula
+FROM aluno a
+JOIN matricula m ON a.id_aluno = m.id_aluno
+GROUP BY a.nome;
+
+
+17. Exibir todas as disciplinas de um curso específico
+
+CREATE VIEW disciplinas_curso_especifico AS
+SELECT d.nome AS disciplina
+FROM disciplina d
+JOIN curso c ON d.id_curso = c.id_curso
+WHERE c.nome = 'Engenharia de Software';
+
+
+18. Exibir os professores que não têm turmas
+
+CREATE VIEW professores_sem_turmas AS
+SELECT p.nome
+FROM professor p
+LEFT JOIN turma t ON p.id_professor = t.id_professor
+WHERE t.id_turma IS NULL;
+
+
+19. Exibir lista de alunos com CPF e email
+
+CREATE VIEW alunos_cpf_email AS
+SELECT nome, cpf, email
+FROM aluno;
+
+
+20. Exibir o total de disciplinas por professor
+
+CREATE VIEW total_disciplinas_por_professor AS
+SELECT p.nome AS nome_professor, COUNT(t.id_disciplina) AS total_disciplinas
+FROM professor p
+JOIN turma t ON p.id_professor = t.id_professor
+GROUP BY p.nome;
